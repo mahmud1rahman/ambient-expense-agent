@@ -20,11 +20,11 @@ graph TD
     %% Nodes
     S((START)):::startNode
     
-    Parse[<b>parse_expense_event</b><br><i>(Python Function)</i>]:::pythonNode
-    AutoApprove[<b>auto_approve</b><br><i>(Python Function)</i>]:::endNode
-    Security[<b>security_checkpoint</b><br><i>(Python Function)</i>]:::pythonNode
-    ReviewRisk[<b>review_risk</b><br><i>(LLM Agent: Gemini)</i>]:::llmNode
-    HumanReview[<b>human_review</b><br><i>(Human-in-the-Loop)</i>]:::humanNode
+    Parse["parse_expense_event<br>(Python Function)"]:::pythonNode
+    AutoApprove["auto_approve<br>(Python Function)"]:::endNode
+    Security["security_checkpoint<br>(Python Function)"]:::pythonNode
+    ReviewRisk["review_risk<br>(LLM Agent: Gemini)"]:::llmNode
+    HumanReview["human_review<br>(Human-in-the-Loop)"]:::humanNode
 
     %% Edges
     S --> Parse

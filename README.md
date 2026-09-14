@@ -1,6 +1,10 @@
 # adk-ambient-expense-agent
 
-🚀 **Live Demo:** [Manager Expense Approval Dashboard](https://adk-ambient-expense-agent-855431754543.us-east1.run.app/)
+This repository contains the Ambient Expense Approval Agent, a workflow designed to process, audit, and route employee expense claims. 
+
+For a detailed breakdown of the agent's logic, nodes, and how it handles Human-in-the-Loop workflows, please see the [Agent Definition](AGENT_DEFINITION.md).
+
+To understand the overall system layout, integrations, and data flow, please refer to the [Project Architecture](PROJECT_ARCHITECTURE.md).
 
 Simple ReAct agent
 Agent generated with `agents-cli` version `1.1.0`
