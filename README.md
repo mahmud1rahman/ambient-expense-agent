@@ -85,7 +85,7 @@ Edit your agent logic in `app/agent.py` and test with `agents-cli playground` - 
 ## Deployment
 
 This project utilizes a split deployment architecture:
-1. **Agent Logic (`expense_agent/`)**: The core workflow is deployed to **Agent Run** (Agent Gateway), which handles the backend execution and listens for incoming Pub/Sub expense events.
+1. **Agent Logic (`expense_agent/`)**: The core workflow is deployed to **Agents Runtime** (Agent Gateway), which handles the backend execution and listens for incoming Pub/Sub expense events.
 2. **Frontend Dashboard (`app/`)**: The manager approval dashboard and UI are deployed as a standalone container on **Google Cloud Run**.
 
 To manually deploy the frontend to Cloud Run:
