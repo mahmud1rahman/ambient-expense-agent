@@ -1,4 +1,4 @@
-# adk-ambient-expense-agent
+# Ambient Expense Approval Agent
 
 This repository contains the Ambient Expense Approval Agent, a workflow designed to process, audit, and route employee expense claims. 
 
