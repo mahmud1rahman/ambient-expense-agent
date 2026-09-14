@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Expense Approval Dashboard</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #f9fafb;
+            --card-bg: #ffffff;
+            --card-border: #e5e7eb;
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --text-muted: #9ca3af;
+            --accent-primary: #2563eb;
+            --accent-hover: #1d4ed8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --danger-bg: #fef2f2;
+            --danger-hover: #fee2e2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .header-title h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-top: 0.35rem;
+        }
+
+        .btn-refresh {
+            background: #ffffff;
+            border: 1px solid var(--card-border);
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-refresh:hover {
+            background: #f3f4f6;
+            color: var(--text-primary);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .session-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .amount-tag {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card-body {
+            margin-bottom: 1.5rem;
+        }
+
+        .claimant-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .claimant-name {
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
+        .purpose-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .alert-box {
+            background: #fffbeb;
+            border: 1px solid #fef3c7;
+            color: #b45309;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: auto;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 0.65rem;
+            border-radius: 0.5rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-approve {
+            background: var(--accent-primary);
+            color: #ffffff;
+        }
+
+        .btn-approve:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-reject {
+            background: var(--card-bg);
+            color: var(--text-secondary);
+            border: 1px solid var(--card-border);
+        }
+
+        .btn-reject:hover {
+            background: #f9fafb;
+            color: var(--text-primary);
+            border-color: #d1d5db;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--card-border);
+            border-top: 2px solid var(--text-secondary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--card-bg);
+            border: 1px dashed var(--card-border);
+            border-radius: 0.75rem;
+        }
+
+        .empty-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Slide-out Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(17, 24, 39, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-panel {
+            width: 100%;
+            max-width: 480px;
+            height: 100%;
+            background: var(--card-bg);
+            border-left: 1px solid var(--card-border);
+            padding: 2rem;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            box-shadow: -4px 0 15px rgba(0,0,0,0.05);
+        }
+
+        .modal-overlay.active .modal-panel {
+            transform: translateX(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+        
+        .modal-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .btn-close {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-close:hover {
+            background: var(--bg-color);
+            color: var(--text-primary);
+        }
+
+        .review-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .review-status-APPROVED {
+            background: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .review-status-REJECTED {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .modal-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-section-content {
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <div class="header-title">
+                    <h1>Manager Approval Portal</h1>
+                </div>
+                <p class="subtitle">Review and authorize flagged employee expense claims</p>
+            </div>
+            <button class="btn-refresh" onclick="loadPendingApprovals()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M23 4v6h-6M1 20v-6h6"></path>
+                    <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"></path>
+                </svg>
+                Refresh
+            </button>
+        </header>
+
+        <main id="pending-grid" class="grid">
+            <!-- Dynamic pending approval cards will be rendered here -->
+        </main>
+    </div>
+
+    <!-- Slide-out Review Modal -->
+    <div id="modal-overlay" class="modal-overlay">
+        <div class="modal-panel">
+            <div class="modal-header">
+                <h2>Compliance Review</h2>
+                <button class="btn-close" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <div id="modal-body">
+                <!-- Dynamic Review Details -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadPendingApprovals() {
+            const grid = document.getElementById('pending-grid');
+            grid.innerHTML = '<div class="empty-state"><div class="spinner"></div><p style="margin-top:1rem; color:var(--text-secondary);">Loading pending approvals...</p></div>';
+
+            try {
+                const response = await fetch('/api/pending');
+                if (!response.ok) throw new Error('Failed to fetch pending items');
+                const items = await response.json();
+
+                if (!items || items.length === 0) {
+                    grid.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">🎉</div>
+                            <h3 style="color:var(--text-primary); font-weight:500;">All Claims Reviewed</h3>
+                            <p style="color:var(--text-secondary); margin-top:0.5rem; font-size:0.95rem;">There are currently no pending expense claims requiring human approval.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                grid.innerHTML = items.map(item => `
+                    <div class="card" id="card-${item.session_id}">
+                        <div>
+                            <div class="card-header">
+                                <span class="session-badge">ID: ${item.session_id.substring(0, 12)}</span>
+                                <div class="amount-tag">$${Number(item.amount).toFixed(2)}</div>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="claimant-info">
+                                    <div class="avatar">${item.claimant ? item.claimant[0].toUpperCase() : 'E'}</div>
+                                    <div>
+                                        <div class="claimant-name">${item.claimant || 'Employee'}</div>
+                                    </div>
+                                </div>
+
+                                <div class="purpose-text">
+                                    "${item.purpose}"
+                                </div>
+
+                                ${item.message ? `
+                                <div class="alert-box">
+                                    <span>⚠️</span>
+                                    <div>${item.message}</div>
+                                </div>` : ''}
+                            </div>
+                        </div>
+
+                        <div class="card-actions">
+                            <button class="btn-action btn-approve" onclick="handleAction('${item.session_id}', '${item.interrupt_id}', true, this)">
+                                Approve
+                            </button>
+                            <button class="btn-action btn-reject" onclick="handleAction('${item.session_id}', '${item.interrupt_id}', false, this)">
+                                Reject
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (err) {
+                grid.innerHTML = `
+                    <div class="empty-state" style="border-color: #fca5a5; background: #fef2f2;">
+                        <div class="empty-icon">⚠️</div>
+                        <h3 style="color:#b91c1c; font-weight:500;">Connection Error</h3>
+                        <p style="color:#ef4444; margin-top:0.5rem; font-size:0.95rem;">${err.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function handleAction(sessionId, interruptId, approved, btnElement) {
+            const cardActions = btnElement.parentElement;
+            const originalContent = cardActions.innerHTML;
+            
+            // Show loading spinner on active button
+            cardActions.innerHTML = `
+                <div style="width:100%; display:flex; justify-content:center; align-items:center; gap:0.5rem; color:var(--text-secondary); padding:0.65rem;">
+                    <div class="spinner"></div> Executing Review...
+                </div>
+            `;
+
+            try {
+                const response = await fetch(`/api/action/${sessionId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        approved: approved,
+                        interrupt_id: interruptId
+                    })
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json();
+                    throw new Error(errData.detail || 'Action failed');
+                }
+
+                const result = await response.json();
+                
+                // Show slide-out modal with final review
+                showModal(result);
+
+                // Reload pending list
+                loadPendingApprovals();
+
+            } catch (err) {
+                alert('Error submitting action: ' + err.message);
+                cardActions.innerHTML = originalContent;
+            }
+        }
+
+        function showModal(result) {
+            const modalBody = document.getElementById('modal-body');
+            const isApproved = result.status === 'APPROVED';
+
+            modalBody.innerHTML = `
+                <div class="review-status-badge review-status-${result.status}">
+                    <span>${isApproved ? '✅' : '❌'}</span>
+                    <span>FINAL DECISION: ${result.status}</span>
+                </div>
+
+                <div class="modal-section">
+                    <div class="modal-section-title">Session Reference</div>
+                    <div class="modal-section-content" style="font-family:'JetBrains Mono', monospace; font-size:0.85rem; color:var(--text-secondary);">
+                        ${result.session_id}
+                    </div>
+                </div>
+
+                <div class="modal-section">
+                    <div class="modal-section-title">Executive Summary</div>
+                    <div class="modal-section-content">
+                        ${result.review_summary}
+                    </div>
+                </div>
+
+                <div class="modal-section">
+                    <div class="modal-section-title">Audit Trail & Action</div>
+                    <div class="modal-section-content" style="color:var(--text-secondary); font-size:0.85rem;">
+                        Manager decision registered as <strong>${result.decision.toUpperCase()}</strong>. Paused workflow resumed.
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('modal-overlay').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.remove('active');
+        }
+
+        // Close modal on overlay click
+        document.getElementById('modal-overlay').addEventListener('click', (e) => {
+            if (e.target.id === 'modal-overlay') closeModal();
+        });
+
+        // Initial load
+        window.addEventListener('DOMContentLoaded', loadPendingApprovals);
+    </script>
+</body>
+</html>
