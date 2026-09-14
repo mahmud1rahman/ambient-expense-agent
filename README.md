@@ -6,8 +6,6 @@ For a detailed breakdown of the agent's logic, nodes, and how it handles Human-i
 
 To understand the overall system layout, integrations, and data flow, please refer to the [Project Architecture](PROJECT_ARCHITECTURE.md).
 
-Simple ReAct agent
-Agent generated with `agents-cli` version `1.1.0`
 
 ## Project Structure
 
@@ -31,6 +29,12 @@ Before you begin, ensure you have:
 - **agents-cli**: Agents CLI - Install with `uv tool install google-agents-cli`
 - **Google Cloud SDK**: For GCP services - [Install](https://cloud.google.com/sdk/docs/install)
 
+## Configuration
+
+This agent requires the following environment variables. You can set them in a `.env` file or export them directly:
+- `GOOGLE_CLOUD_PROJECT`: Your GCP project ID.
+- `LOCATION`: Your GCP region (e.g., `us-central1`).
+- `AUTO_APPROVE_THRESHOLD`: The dollar amount threshold for auto-approving expenses (default: $100).
 
 ## Quick Start
 
